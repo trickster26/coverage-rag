@@ -1,0 +1,33 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      # Retrieval, refusal and redaction evals need no keys and gate every push.
+      - run: python -m evals.run_evals --min-recall 0.9 --json eval-results.json
+      - uses: actions/upload-artifact@v4
+        with: { name: eval-results, path: eval-results.json }
+
+  answer-evals:
+    # Generated-answer evals run only when Azure OpenAI secrets are configured.
+    if: ${{ vars.RUN_LLM_EVALS == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      LLM_PROVIDER: azure
+      AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+      AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+      AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ vars.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+      AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - run: python -m evals.run_evals --min-recall 0.9 --min-answer 0.8
