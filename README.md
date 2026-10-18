@@ -78,7 +78,7 @@ Keyword-only local mode (no API keys, what CI runs on every push):
 
 | Metric | Result |
 |---|---|
-| Recall@5 | 0.95 (18/19) |
+| Recall@5 | 0.95 (19/20) |
 | MRR | 0.72 |
 | Out-of-scope refused | 5/5 |
 | Identifiers redacted | 1/1 |

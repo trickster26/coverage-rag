@@ -22,7 +22,9 @@ PATTERNS: list[tuple[str, re.Pattern]] = [
     ("PHONE", re.compile(r"(?<!\w)(?:\+?91[\s-]?|\+?1[\s-]?)?(?:\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}|[6-9]\d{4}[\s-]?\d{5})(?!\w)")),
     ("DOB", re.compile(r"(?i)\b(?:dob|date of birth|born(?: on)?)\s*[:\-]?\s*\d{1,4}[/.\-]\d{1,2}[/.\-]\d{1,4}\b")),
     ("RECORD_ID", re.compile(r"(?i)\b(?:mrn|uhid|member id|policy (?:no|number)|claim (?:no|number|id))\s*[:#]?\s*[A-Z0-9-]{4,}\b")),
-    ("NAME", re.compile(r"(?i)\b(?:patient|name|insured|member|beneficiary)\s*(?:name)?\s*[:\-]\s*[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3}")),
+    # Label is case-insensitive, the name itself must be capitalised, so "Patient: is cataract covered" keeps its words.
+    ("NAME", re.compile(r"\b(?i:patient|name|insured|member|beneficiary)\s*(?i:name)?\s*[:\-]\s*"
+                        r"(?!(?:Is|Are|Does|Do|Can|Will|What|How|Who|When|Where|Why)\b)[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3}")),
 ]
 
 

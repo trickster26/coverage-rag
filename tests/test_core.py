@@ -25,6 +25,11 @@ def test_redaction_leaves_policy_numbers_alone():
     assert red.found == {} and "Rs.5000" in red.text
 
 
+def test_name_label_does_not_eat_the_question():
+    assert guardrails.redact("Patient: is cataract covered under Arogya Sanjeevani?").found == {}
+    assert guardrails.redact("PATIENT NAME: Ravi Sharma").text == "[NAME]"
+
+
 def test_rrf_rewards_agreement_between_lists():
     fused = dict(rrf([["a", "b", "c"], ["b", "a", "d"]]))
     assert fused["a"] == fused["b"] > fused["c"]
