@@ -55,7 +55,8 @@ class Settings:
     def embeddings_enabled(self) -> bool:
         if self.llm_provider == "azure":
             return bool(self.azure_embedding_deployment)
-        return self.llm_provider == "openai"
+        # Empty OPENAI_EMBEDDING_MODEL turns vectors off for chat-only providers (Groq, most NVIDIA chat setups).
+        return self.llm_provider == "openai" and bool(self.openai_embedding_model)
 
 
 settings = Settings()

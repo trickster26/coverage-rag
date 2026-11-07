@@ -6,3 +6,4 @@ data/embeddings-*.npy
 .pytest_cache/
 eval-results.json
 *.egg-info/
+lessons/

@@ -41,6 +41,8 @@ def embed_fn(s: Settings):
     else:
         from langchain_openai import OpenAIEmbeddings
 
+        # Non-OpenAI servers expect raw strings, not tiktoken ids.
         model = OpenAIEmbeddings(model=s.openai_embedding_model, api_key=s.openai_api_key,
-                                 base_url=s.openai_base_url or None)
+                                 base_url=s.openai_base_url or None,
+                                 check_embedding_ctx_length=not s.openai_base_url)
     return model.embed_documents
